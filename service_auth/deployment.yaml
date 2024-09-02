@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: service-auth
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: service-auth
+  template:
+    metadata:
+      labels:
+        app: service-auth
+    spec:
+      containers:
+      - name: service-auth
+        image: service_auth:v1.0
+        ports:
+        - containerPort: 3000 # port service-auth yang ada di image docker
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: service-auth
+spec:
+  selector:
+    app: service-auth
+  ports:
+    - protocol: TCP
+      port: 80         # Port yang digunakan di dalam cluster
+      targetPort: 3000 # Port di container yang ditargetkan
+      # nodePort: 30000  # Port yang digunakan untuk mengakses dari luar cluster
+  type: ClusterIP       # Tipe layanan untuk expose port ke luar cluster

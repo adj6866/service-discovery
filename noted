@@ -1,0 +1,23 @@
+kubectl get pods
+kubectl get svc
+kubectl pods delete --all
+kubectl svc delete --all
+
+kubectl apply -f ingress.yaml
+kubectl apply -f deployment.yaml
+kubectl replace --force -f ingress.yaml
+kubectl replace --force -f deployment.yaml
+
+kubectl describe ingress ingress-local
+kubectl describe svc service-auth
+
+kubectl logs -n kube-system ingress-local 
+kubectl logs -n kube-system <nginx-ingress-controller-pod>
+
+
+kubectl get ingress
+kubectl get pods -n ingress-nginx
+kubectl replace --force -f ingress.yaml 
+kubectl describe pod ingress-nginx-controller-8597858cfc-f84zh -n ingress-nginx
+kubectl rollout restart deployment ingress-nginx-controller -n ingress-nginx
+kubectl describe configmap ingress-nginx-controller -n ingress-nginx
