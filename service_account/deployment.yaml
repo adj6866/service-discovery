@@ -13,10 +13,10 @@ spec:
         app: service-account
     spec:
       containers:
-      - name: service-account
-        image: service_account:v1.0
-        ports:
-        - containerPort: 3000 # port service-account yang ada di image docker
+        - name: service-account
+          image: service_account:v1.0
+          ports:
+            - containerPort: 3000 # port service-account yang ada di image docker
 ---
 apiVersion: v1
 kind: Service
@@ -27,7 +27,7 @@ spec:
     app: service-account
   ports:
     - protocol: TCP
-      port: 80         # Port yang digunakan di dalam cluster
+      port: 80 # Port yang digunakan di dalam cluster
       targetPort: 3000 # Port di container yang ditargetkan
       # nodePort: 30001  # Port yang digunakan untuk mengakses dari luar cluster
-  type: ClusterIP       # Tipe layanan untuk expose port ke luar cluster
+  type: ClusterIP # Tipe layanan untuk expose port ke luar cluster

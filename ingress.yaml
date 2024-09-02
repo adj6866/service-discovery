@@ -1,39 +1,75 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: ingress-auth
+  name: ingress-rules
   annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /$2 # Handle requests under /auth
+    nginx.ingress.kubernetes.io/rewrite-target: /$2  # Rewrite target untuk mengatur ulang subpath
+    # nginx.ingress.kubernetes.io/ssl-redirect: "true" # Redirect HTTP ke HTTPS (jika SSL/TLS digunakan)
+    nginx.ingress.kubernetes.io/limit-connections: "10"  # Maksimum koneksi per IP (opsional, sesuaikan dengan kebutuhan)
+    nginx.ingress.kubernetes.io/limit-rps: "2"  # Maksimum permintaan per detik
+    nginx.ingress.kubernetes.io/limit-burst: "10"  # Jumlah permintaan burst yang diperbolehkan
+    nginx.ingress.kubernetes.io/limit-rate: "1mb"  # Maksimum rate (bytes per detik), sesuaikan dengan kebutuhan
 spec:
   ingressClassName: nginx
+  # tls:
+  # - hosts:
+  #     - kubernetes.local
+  #   # secretName: tls-secret  # Nama secret yang berisi sertifikat SSL (pastikan sudah dibuat)
   rules:
     - host: kubernetes.local
       http:
         paths:
-          - path: /auth(/|$)(.*)  # Match /auth and any sub-paths
-            pathType: ImplementationSpecific
+          - path: /auth(/|$)(.*)  # Mencocokkan path /auth dan subpath-nya
+            pathType: ImplementationSpecific  # Menggunakan Prefix untuk mencocokkan path dan subpath
             backend:
               service:
                 name: service-auth
                 port:
                   number: 80
----
-apiVersion: networking.k8s.io/v1
-kind: Ingress
-metadata:
-  name: ingress-account
-  annotations:
-    nginx.ingress.kubernetes.io/rewrite-target: /$2  # Adjust rewrite-target to retain the subpath
-spec:
-  ingressClassName: nginx
-  rules:
-    - host: kubernetes.local
-      http:
-        paths:
-          - path: /account(/|$)(.*)  # Use regex to match subpaths
-            pathType: ImplementationSpecific  # Use ImplementationSpecific to support regex paths
+          - path: /account(/|$)(.*)  # Mencocokkan path /account dan subpath-nya
+            pathType: ImplementationSpecific  # Menggunakan Prefix untuk mencocokkan path dan subpath
             backend:
               service:
                 name: service-account
                 port:
                   number: 80
+
+# apiVersion: networking.k8s.io/v1
+# kind: Ingress
+# metadata:
+#   name: ingress-auth
+#   annotations:
+#     nginx.ingress.kubernetes.io/rewrite-target: /$2 # Handle requests under /auth
+# spec:
+#   ingressClassName: nginx
+#   rules:
+#     - host: kubernetes.local
+#       http:
+#         paths:
+#           - path: /auth(/|$)(.*)  # Match /auth and any sub-paths
+#             pathType: ImplementationSpecific
+#             backend:
+#               service:
+#                 name: service-auth
+#                 port:
+#                   number: 80
+# ---
+# apiVersion: networking.k8s.io/v1
+# kind: Ingress
+# metadata:
+#   name: ingress-account
+#   annotations:
+#     nginx.ingress.kubernetes.io/rewrite-target: /$2  # Adjust rewrite-target to retain the subpath
+# spec:
+#   ingressClassName: nginx
+#   rules:
+#     - host: kubernetes.local
+#       http:
+#         paths:
+#           - path: /account(/|$)(.*)  # Use regex to match subpaths
+#             pathType: ImplementationSpecific  # Use ImplementationSpecific to support regex paths
+#             backend:
+#               service:
+#                 name: service-account
+#                 port:
+#                   number: 80

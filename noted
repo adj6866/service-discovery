@@ -21,3 +21,13 @@ kubectl replace --force -f ingress.yaml
 kubectl describe pod ingress-nginx-controller-8597858cfc-f84zh -n ingress-nginx
 kubectl rollout restart deployment ingress-nginx-controller -n ingress-nginx
 kubectl describe configmap ingress-nginx-controller -n ingress-nginx
+
+
+service account server grpc
+# 127.0.0.1 port local
+# 192.168.65.2 port docker grpcurl
+docker run --rm -it fullstorydev/grpcurl -plaintext -d '{"id":"123"}' 192.168.65.2:50051 hero.HeroService/GetHero
+docker run --rm -it fullstorydev/grpcurl -plaintext 192.168.65.2:50051 list
+
+TODO
+service auth client grpc
